@@ -1,18 +1,46 @@
 import { useState } from 'react';
 import { appendErrors, useForm } from 'react-hook-form';
+const bcrypt = require('bcryptjs');
+const salt = bcrypt.genSaltSync(10);
 
 export default function Form () {
 
-    const { register, handleSubmit, watch, formState: {errors} } = useForm();
-    const [form, setForm] = useState({});
+    const { register, handleSubmit, reset, formState: {errors} } = useForm();
+    const [succesForm, setSuccesForm] = useState(false);
+
+    
     const onSubmit = data => {
-        setForm({data})
-        console.log(data)
+        sendForm({
+            username: data.username,
+            password: bcrypt.hashSync(data.password, salt),
+            name: data.name,
+            email: data.email.toLowerCase()
+        });
+        reset();
+        setSuccesForm(true);
+    }
+
+    const onError = () => {
+        setSuccesForm(false)
+    }
+
+    const sendForm = async (data) => {
+        
+        const response = await fetch('http://localhost:5500/users', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        }).then((res) => {
+            console.log(res);
+        }).
+           catch((err) => console.error(`Error creating user with the form : ${err}`));
     }
     
-    // console.log(watch("firstname"));
-
-    return <form onSubmit={handleSubmit(onSubmit)}>
+    return <form method='POST' onSubmit={handleSubmit(onSubmit, onError)}>
+            {succesForm ? <p className='success-form'>Success ! Your account has been created.</p> : '' }
                 <div className="form" >
                     <div className="form-group">
                         <label htmlFor="username">Username</label>
