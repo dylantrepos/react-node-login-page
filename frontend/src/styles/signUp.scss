@@ -5,6 +5,7 @@ $grey: rgb(82, 82, 82);
     padding: 0;
     margin: 0;
     box-sizing: border-box;
+    font-family: sans-serif;
 }
 
 .btn-primary {
@@ -14,6 +15,9 @@ $grey: rgb(82, 82, 82);
     border: solid 2px $primary;
     font-size: 1.2rem;
     transition: all .5s;
+    text-decoration: none;
+    color: black;
+    cursor: pointer;
     
     &:hover {
         background-color: $primary;
@@ -29,7 +33,6 @@ $grey: rgb(82, 82, 82);
     width: 100%;
     padding: 2rem 5rem;
     color: black;
-    font-family: sans-serif;
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(25rem, 1fr));
     grid-gap: 1rem;
@@ -64,7 +67,7 @@ $grey: rgb(82, 82, 82);
     p:nth-of-type(2){
         font-size: 1rem;
         color: $grey;
-        margin: 2rem 0 1rem;
+        margin: 2rem 0 1.5rem;
     }
 
 }
@@ -112,9 +115,20 @@ $grey: rgb(82, 82, 82);
 
 .success-form {
     background-color: rgba(175, 231, 175, 0.479);
-    padding: 1rem;
+    padding: 2rem 1rem;
     border-radius: 10px;
     border: green 1px solid;
     box-shadow: rgba(112, 219, 112, 0.479) 0px 10px 20px -10px;
+    margin-bottom: 1.5rem;
+
+}
+
+.error-form {
+    background-color: rgba(255, 221, 221, 0.479);
+    padding: 2rem 1rem;
+    border-radius: 10px;
+    border: rgb(128, 0, 0) 1px solid;
+    box-shadow: rgba(219, 112, 112, 0.479) 0px 10px 20px -10px;
+    margin-bottom: 1.5rem;
 
 }

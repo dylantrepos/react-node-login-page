@@ -15,23 +15,33 @@ router.get('/', (req, res) => {
 });
 
 // Find a user by id
-router.get('/:id', (req, res) => {
-   if(!ObjectID.isValid(req.params.id)) return errIdUnknown(res, req);
-   UsersModel.findById(req.params.id, (err, docs) => {
-       if(!err) res.send(docs);
-       else console.error(`Error getting data from one user : ${err}`)
-   })
+// router.get('/:id', (req, res) => {
+//    if(!ObjectID.isValid(req.params.id)) return errIdUnknown(res, req);
+//    UsersModel.findById(req.params.id, (err, docs) => {
+//        if(!err) res.send(docs);
+//        else console.error(`Error getting data from one user : ${err}`)
+//    })
 
+// });
+
+// Find a user by email
+router.get('/:email', (req, res) => {
+  UsersModel.findOne({email: new RegExp('^'+req.params.email+'$', "i")}, function(err, doc) {
+    if(err) console.error(`Error finding user : ${err}`)
+    if(doc === null) res.send({error: true})
+    else res.send(doc);
+  });
 });
 
 // Create a new user
 router.post('/', (req, res) => {
     const newUser = new UsersModel({
-            username: req.body.username,
+            email: req.body.email,
             password: req.body.password,
             status: req.body.status,
             name: req.body.name,
-            email: req.body.email
+            dob: req.body.dob,
+            city: req.body.city,
         });
         
         newUser.save((err, docs) => {
@@ -45,11 +55,12 @@ router.post('/', (req, res) => {
         if(!ObjectID.isValid(req.params.id)) return errIdUnknown(res, req);
         
         const updateUser = {
-            username: req.body.username,
+            email: req.body.email,
             password: req.body.password,
             status: req.body.status,
             name: req.body.name,
-            email: req.body.mail
+            dob: req.body.dob,
+            city: req.body.city,
     };
 
     UsersModel.findByIdAndUpdate(

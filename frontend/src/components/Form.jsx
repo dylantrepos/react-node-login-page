@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { appendErrors, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 const bcrypt = require('bcryptjs');
 const salt = bcrypt.genSaltSync(10);
 
@@ -7,21 +7,36 @@ export default function Form () {
 
     const { register, handleSubmit, reset, formState: {errors} } = useForm();
     const [succesForm, setSuccesForm] = useState(false);
+    const [errorForm, setErrorForm] = useState(false);
 
+    const onSubmit = async data => {
+        //console.log(data)
+        const test = await fetch(`http://localhost:5500/users/${data.email.toLowerCase()}`).
+                then((data) => data.json()).
+                then((res) => {
+                    return res["error"] ? false : true
+                })  
+
+        if(!test){
+            sendForm({
+                email: data.email.toLowerCase(),
+                password: bcrypt.hashSync(data.password, salt),
+                name: data.name,
+                dob: data.dob,
+                city: data.city
+            });
+            reset();
+            setSuccesForm(true);
+        }
+        else {
+            setErrorForm(true)
+        }
     
-    const onSubmit = data => {
-        sendForm({
-            username: data.username,
-            password: bcrypt.hashSync(data.password, salt),
-            name: data.name,
-            email: data.email.toLowerCase()
-        });
-        reset();
-        setSuccesForm(true);
     }
 
     const onError = () => {
         setSuccesForm(false)
+        setErrorForm(false)
     }
 
     const sendForm = async (data) => {
@@ -38,18 +53,30 @@ export default function Form () {
         }).
            catch((err) => console.error(`Error creating user with the form : ${err}`));
     }
-    
+
+    const getAge = (date) => {
+        const today = new Date();
+        const birthDate = new Date(date);
+        let age = today.getFullYear() - birthDate.getFullYear();
+        const month = today.getMonth() - birthDate.getMonth();
+        if(month < 0 || (month === 0 && today.getDate() < birthDate.getDate())){
+            age--
+        }
+        if(age >= 18) return true
+        else return false
+    }
+
     return <form method='POST' onSubmit={handleSubmit(onSubmit, onError)}>
             {succesForm ? <p className='success-form'>Success ! Your account has been created.</p> : '' }
+            {errorForm ? <p className='error-form'>Ho, this account already exists... ! Try with a different email.</p> : '' }
                 <div className="form" >
-                    <div className="form-group">
-                        <label htmlFor="username">Username</label>
-                        <input {...register("username", { required: "This is required.", 
-                            minLength: {  
-                                value: 5,
-                                message: 'Username must be at least 5 characters.'
-                            }})} placeholder="Username..." />
-                        <p className='errors'>{errors.username?.message}</p>
+                <div className="form-group">
+                        <label htmlFor="email">Email</label>
+                        <input type="email" {...register("email", { required: "This is required.", pattern: {
+                                value: /\w*@\w*\.[a-z]*/,
+                                message: 'Please enter a valid email address'
+                                } })} placeholder="Email..." />
+                        <p className='errors'>{errors.email?.message}</p>
                     </div>
                     <div className="form-group">
                         <label htmlFor="password">Password</label>
@@ -65,19 +92,27 @@ export default function Form () {
                     <div className="form-group">
                         <label htmlFor="name">Name</label>
                         <input {...register("name", { required: "This is required.", pattern: { 
-                            value: /^[a-zA-Z]+$/gm,
+                            value: /^[A-Za-zÀ-ÖØ-öø-ÿ]+$/gm,
                             message: "Name can only contains letters (a-z)."
                         }})} placeholder="Name..." />
                         <p className='errors'>{errors.name?.message}</p>
                     </div>
                     <div className="form-group">
-                        <label htmlFor="email">Email</label>
-                        <input type="email" {...register("email", { required: "This is required.", pattern: {
-                                value: /\w*@\w*\.[a-z]*/,
-                                message: 'Please enter a valid email address'
-                                } })} placeholder="Email..." />
-                        <p className='errors'>{errors.email?.message}</p>
+                        <label htmlFor="dob">Date of birth</label>
+                        <input type="date" {...register("dob", { required: "This is required.", 
+                        validate: dob => getAge(dob) === true || 'You must be 16+ to sign in.'
+                        })} />
+                        <p className='errors'>{errors.dob?.message}</p>
                     </div>
+                    <div className="form-group">
+                        <label htmlFor="city">City</label>
+                        <input {...register("city", { required: "This is required.", pattern: { 
+                            value: /^[A-Za-zÀ-ÖØ-öø-ÿ]+$/gm,
+                            message: "Name can only contains letters (a-z)."
+                        }})} placeholder="City..." />
+                        <p className='errors'>{errors.city?.message}</p>
+                    </div>
+                   
 
                     <input type="submit" value="Create my account" className='btn-primary' />
                 </div>

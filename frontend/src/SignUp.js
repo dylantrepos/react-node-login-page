@@ -1,6 +1,7 @@
 import React from 'react';
 import './styles/signUp.scss';
 import Form from './components/Form';
+import { Link, Outlet } from "react-router-dom";
 
 function SignUp() {
   return (
@@ -11,8 +12,7 @@ function SignUp() {
               <p className='text'>First time here ? Let's create your account <strong>quickly</strong> !</p>
               <hr />
               <p className='text'><em>Already a member ? :) </em></p>
-              <button className='btn-primary'>Login</button>
-
+              <Link to="/login" className='btn-primary'>Login</Link>
             </div>
         </div>
         <div className="right-block">

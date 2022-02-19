@@ -3,9 +3,10 @@ const mongoose = require("mongoose");
 const UsersModel = mongoose.model(
     "node-login",
     {
-        username: {
+        email: {
             type: String,
-            required: true
+            required: true,
+            unique: true
         }, 
         password: {
             type: String,
@@ -19,9 +20,13 @@ const UsersModel = mongoose.model(
             type: String,
             required: true
         },
-        email: {
+        dob: {
             type: String,
             required: true
+        },
+        city: {
+            type: String,
+            required: true        
         },
         createdAt: {
             type: Date,
