@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import getAge from '../helpers/getAge';
 const bcrypt = require('bcryptjs');
 const salt = bcrypt.genSaltSync(10);
 
@@ -18,6 +19,7 @@ export default function Form () {
                 })  
 
         if(!test){
+            setErrorForm(false)
             sendForm({
                 email: data.email.toLowerCase(),
                 password: bcrypt.hashSync(data.password, salt),
@@ -29,6 +31,7 @@ export default function Form () {
             setSuccesForm(true);
         }
         else {
+            setSuccesForm(false);
             setErrorForm(true)
         }
     
@@ -52,18 +55,6 @@ export default function Form () {
             console.log(res);
         }).
            catch((err) => console.error(`Error creating user with the form : ${err}`));
-    }
-
-    const getAge = (date) => {
-        const today = new Date();
-        const birthDate = new Date(date);
-        let age = today.getFullYear() - birthDate.getFullYear();
-        const month = today.getMonth() - birthDate.getMonth();
-        if(month < 0 || (month === 0 && today.getDate() < birthDate.getDate())){
-            age--
-        }
-        if(age >= 18) return true
-        else return false
     }
 
     return <form method='POST' onSubmit={handleSubmit(onSubmit, onError)}>
