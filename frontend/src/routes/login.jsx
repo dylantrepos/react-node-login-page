@@ -1,7 +1,7 @@
 import React from 'react';
 import '../styles/signUp.scss';
 import { Link } from "react-router-dom";
-import Form from '../components/Form';
+import FormSignUp from '../components/FormSignUp';
 
 
 
@@ -18,7 +18,7 @@ const Login = () => {
                 </div>
             </div>
             <div className="right-block">
-                <Form />
+                <FormSignUp />
             </div>
         </div>
     );

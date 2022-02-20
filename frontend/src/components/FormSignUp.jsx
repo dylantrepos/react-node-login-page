@@ -1,17 +1,18 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import getAge from '../helpers/getAge';
+import { postForm } from '../helpers/postForm';
+import Submitbutton from './submitButton';
 const bcrypt = require('bcryptjs');
 const salt = bcrypt.genSaltSync(10);
 
-export default function Form () {
+export default function FormSignUp () {
 
     const { register, handleSubmit, reset, formState: {errors} } = useForm();
     const [succesForm, setSuccesForm] = useState(false);
     const [errorForm, setErrorForm] = useState(false);
 
     const onSubmit = async data => {
-        //console.log(data)
         const test = await fetch(`http://localhost:5500/users/${data.email.toLowerCase()}`).
                 then((data) => data.json()).
                 then((res) => {
@@ -20,7 +21,7 @@ export default function Form () {
 
         if(!test){
             setErrorForm(false)
-            sendForm({
+            postForm({
                 email: data.email.toLowerCase(),
                 password: bcrypt.hashSync(data.password, salt),
                 name: data.name,
@@ -40,21 +41,6 @@ export default function Form () {
     const onError = () => {
         setSuccesForm(false)
         setErrorForm(false)
-    }
-
-    const sendForm = async (data) => {
-        
-        const response = await fetch('http://localhost:5500/users', {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(data)
-        }).then((res) => {
-            console.log(res);
-        }).
-           catch((err) => console.error(`Error creating user with the form : ${err}`));
     }
 
     return <form method='POST' onSubmit={handleSubmit(onSubmit, onError)}>
@@ -104,8 +90,8 @@ export default function Form () {
                         <p className='errors'>{errors.city?.message}</p>
                     </div>
                    
+                    <Submitbutton>Create my account</Submitbutton>
 
-                    <input type="submit" value="Create my account" className='btn-primary' />
                 </div>
             </form>
 }
