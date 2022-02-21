@@ -2,11 +2,11 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import getAge from '../helpers/getAge';
 import { postForm } from '../helpers/postForm';
-import Submitbutton from './submitButton';
+import Submitbutton from './SubmitButton';
 const bcrypt = require('bcryptjs');
 const salt = bcrypt.genSaltSync(10);
 
-export default function FormSignUp () {
+export default function SignUpForm () {
 
     const { register, handleSubmit, reset, formState: {errors} } = useForm();
     const [succesForm, setSuccesForm] = useState(false);
