@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import getAge from '../helpers/getAge';
-import { postForm } from '../helpers/postForm';
+import { postData } from '../helpers/postData';
 import Submitbutton from './SubmitButton';
 const bcrypt = require('bcryptjs');
 const salt = bcrypt.genSaltSync(10);
@@ -13,28 +13,22 @@ export default function LoginForm () {
     const [errorForm, setErrorForm] = useState(false);
 
     const onSubmit = async data => {
-        const test = await fetch(`http://localhost:5500/users/${data.email.toLowerCase()}`).
+        const datas = await fetch(`http://localhost:5500/users/${data.email.toLowerCase()}`).
                 then((data) => data.json()).
                 then((res) => {
-                    return res["error"] ? false : true
+                    return res["error"] ? false : res
                 })  
-
-        if(!test){
-            setErrorForm(false)
-            postForm({
-                email: data.email.toLowerCase(),
-                password: bcrypt.hashSync(data.password, salt),
-            });
-            reset();
-            setSuccesForm(true);
+        if(datas){
+            bcrypt.compareSync(data.password, datas.password) ? console.log("yes") : setErrorForm(true);
+            
         }
         else {
-            setSuccesForm(false);
+            console.log("nope")
             setErrorForm(true)
         }
-    
+        
     }
-
+    
     const onError = () => {
         setSuccesForm(false)
         setErrorForm(false)
@@ -42,7 +36,7 @@ export default function LoginForm () {
 
     return <form method='GET' onSubmit={handleSubmit(onSubmit, onError)}>
             {succesForm ? <p className='success-form'>Success ! Your account has been created.</p> : '' }
-            {errorForm ? <p className='error-form'>Ho, this account already exists... ! Try with a different email.</p> : '' }
+            {errorForm ? <p className='error-form'>Error, your email or password are not correct. Try again or <a href='/' className='link'>create an account</a>.</p> : '' }
                 <div className="form" >
                 <div className="form-group">
                         <label htmlFor="email">Email</label>

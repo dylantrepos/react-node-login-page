@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import getAge from '../helpers/getAge';
-import { postForm } from '../helpers/postForm';
+import { postData } from '../helpers/postData';
 import Submitbutton from './SubmitButton';
 const bcrypt = require('bcryptjs');
 const salt = bcrypt.genSaltSync(10);
@@ -13,15 +13,19 @@ export default function SignUpForm () {
     const [errorForm, setErrorForm] = useState(false);
 
     const onSubmit = async data => {
-        const test = await fetch(`http://localhost:5500/users/${data.email.toLowerCase()}`).
+        const accountAlreadyExists = await fetch(`http://localhost:5500/users/${data.email.toLowerCase()}`).
                 then((data) => data.json()).
                 then((res) => {
                     return res["error"] ? false : true
                 })  
-
-        if(!test){
+        console.log(accountAlreadyExists)
+        if(accountAlreadyExists){
+            setSuccesForm(false);
+            setErrorForm(true)
+        }
+        else {
             setErrorForm(false)
-            postForm({
+            postData("POST", {
                 email: data.email.toLowerCase(),
                 password: bcrypt.hashSync(data.password, salt),
                 name: data.name,
@@ -31,11 +35,7 @@ export default function SignUpForm () {
             reset();
             setSuccesForm(true);
         }
-        else {
-            setSuccesForm(false);
-            setErrorForm(true)
-        }
-    
+        
     }
 
     const onError = () => {

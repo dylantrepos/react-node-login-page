@@ -149,3 +149,12 @@ $grey: rgb(82, 82, 82);
     margin-bottom: 1.5rem;
 
 }
+
+.link {
+    color: blue;
+    text-decoration: none;
+
+    &:hover {
+        text-decoration: underline;
+    }
+}
