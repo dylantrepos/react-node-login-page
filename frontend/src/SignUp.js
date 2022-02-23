@@ -1,10 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './styles/signUp.scss';
 import { Link, Outlet } from "react-router-dom";
 import SignUpForm from './components/SignUpForm';
 import LoginForm from './components/LoginForm';
 import Submitbutton from './components/SubmitButton';
-
 
 function SignUp() {
   const [login, setLogin] = useState(false);
@@ -12,6 +11,12 @@ function SignUp() {
   const handleLogin = () => {
       setLogin(!login)
   }
+
+  useEffect(() => {
+    fetch('http://localhost:5500/users/login/')
+        .then((res) => res.json())
+        .then(res => console.log(res))
+}, []);
 
   return (
     <div className="container">

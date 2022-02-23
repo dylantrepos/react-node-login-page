@@ -13,7 +13,7 @@ export default function SignUpForm () {
     const [errorForm, setErrorForm] = useState(false);
 
     const onSubmit = async data => {
-        const accountAlreadyExists = await fetch(`http://localhost:5500/users/${data.email.toLowerCase()}`).
+        const accountAlreadyExists = await fetch(`http://localhost:5500/users/get/${data.email.toLowerCase()}`).
                 then((data) => data.json()).
                 then((res) => {
                     return res["error"] ? false : true

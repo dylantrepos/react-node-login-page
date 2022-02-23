@@ -1,6 +1,5 @@
-import { useState } from 'react';
+import {  useState } from 'react';
 import { useForm } from 'react-hook-form';
-import getAge from '../helpers/getAge';
 import { postData } from '../helpers/postData';
 import Submitbutton from './SubmitButton';
 const bcrypt = require('bcryptjs');
@@ -12,29 +11,27 @@ export default function LoginForm () {
     const [succesForm, setSuccesForm] = useState(false);
     const [errorForm, setErrorForm] = useState(false);
 
-    const onSubmit = async data => {
-        const datas = await fetch(`http://localhost:5500/users/${data.email.toLowerCase()}`).
-                then((data) => data.json()).
-                then((res) => {
-                    return res["error"] ? false : res
-                })  
-        if(datas){
-            bcrypt.compareSync(data.password, datas.password) ? console.log("yes") : setErrorForm(true);
-            
-        }
-        else {
-            console.log("nope")
-            setErrorForm(true)
-        }
-        
-    }
     
-    const onError = () => {
-        setSuccesForm(false)
+    const onSubmit = async data => {
         setErrorForm(false)
+        const url = 'http://localhost:5500/users/login/';
+        const datas = await fetch(url, {
+            method: "POST",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            credentials: 'include',
+            body: JSON.stringify({email: data.email.toLowerCase(), password: data.password})
+        }).then((data) => data.json())
+          .then((data) => {
+              if(data["error"]) setErrorForm(true)
+              else console.log('front : ' + JSON.stringify(data))
+            })
+            .catch(err => console.error(`Error when trying to connect to ${url}. Error message : ${err}`))
     }
 
-    return <form method='GET' onSubmit={handleSubmit(onSubmit, onError)}>
+    return <form onSubmit={handleSubmit(onSubmit)}>
             {succesForm ? <p className='success-form'>Success ! Your account has been created.</p> : '' }
             {errorForm ? <p className='error-form'>Error, your email or password are not correct. Try again or <a href='/' className='link'>create an account</a>.</p> : '' }
                 <div className="form" >
