@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express();
 const ObjectID = require("mongoose").Types.ObjectId;
+const bcrypt = require("bcryptjs");
 
 const { UsersModel } = require("../models/userModel");
 
@@ -14,24 +15,42 @@ router.get('/', (req, res) => {
     });
 });
 
-// Find a user by id
-// router.get('/:id', (req, res) => {
-//    if(!ObjectID.isValid(req.params.id)) return errIdUnknown(res, req);
-//    UsersModel.findById(req.params.id, (err, docs) => {
-//        if(!err) res.send(docs);
-//        else console.error(`Error getting data from one user : ${err}`)
-//    })
-
-// });
-
 // Find a user by email
-router.get('/:email', (req, res) => {
+router.get('/get/:email', (req, res) => {
   UsersModel.findOne({email: new RegExp('^'+req.params.email+'$', "i")}, function(err, doc) {
     if(err) console.error(`Error finding user : ${err}`)
     if(doc === null) res.send({error: true})
     else res.send(doc);
   });
 });
+
+// Check if login credential are correct
+router.get('/login', (req, res) => {
+    if(req.session.user) {
+        console.log('yes')
+        res.send({ loggedIn: true, user: req.session.user })
+    } else {
+        console.log('no')
+        res.send({ loggedIn: false })
+    }
+})
+
+router.post('/login', (req, res) => {
+    const email = req.body.email;
+    const password = req.body.password;
+    UsersModel.findOne({email: email}, function(err, doc) {
+        if(err) return console.error(`Error login user : ${err}`)
+        if(doc === null) return res.send({error: true})
+        if(bcrypt.compareSync(password, doc.password)) {
+            req.session.user = doc;
+            //req.session.save();
+            console.log('back : ' + (req.session.user));
+            res.send(doc);
+        }    
+        else return res.send({error: true})
+      });
+});
+
 
 // Create a new user
 router.post('/', (req, res) => {
