@@ -13,7 +13,12 @@ function SignUp() {
   }
 
   useEffect(() => {
-    fetch('http://localhost:5500/users/login')
+    fetch('http://localhost:5500/users/login', {
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      credentials: 'include'
+    })
         .then(res => res.json())
         .then(res => console.log(res))
 }, []);

@@ -20,7 +20,7 @@ app.use(session({
     saveUninitialized: false,
     store: store,
     cookie: {
-        expires: 60 * 60 * 240,
+        expires: 1000 * 60 * 60 * 24,
     }
 }))
 
@@ -34,7 +34,6 @@ app.use(cors({
 }));
 
 app.use(bodyParser.urlencoded({ extended: true }));
-
 
 app.use('/users', usersRoutes);
 

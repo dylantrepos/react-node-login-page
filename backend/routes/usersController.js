@@ -26,12 +26,11 @@ router.get('/get/:email', (req, res) => {
 
 // Check if login credential are correct
 router.get('/login', (req, res) => {
-    if(req.session.authenticated) {
+    if(req.session.userid) {
         // res.json(req.session.authenticated);
-        res.json({test: true})
+        res.json(req.session)
     } else {
-        //console.log(req)
-        res.json(req.sessionID)
+        res.send({fail: true})
     }
 })
 
@@ -65,6 +64,7 @@ router.post('/login', (req, res) => {
             } else {
                 if(bcrypt.compareSync(password, doc.password)) {
                     req.session.authenticated = true;
+                    req.session.userid = 'jean',
                     req.session.user = doc;
                     console.log('back : ' + (req.session.user));
                     res.json(req.session);
@@ -129,5 +129,10 @@ router.delete("/:id", (req, res) => {
         }
     );
 });
+
+router.get("/disconnected", (req, res) => {
+    res.clearCookie('connect.sid')
+    res.redirect('http://localhost:3000/', 302)
+})
 
 module.exports = router;

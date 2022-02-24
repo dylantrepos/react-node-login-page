@@ -23,7 +23,7 @@ export default function LoginForm () {
             },
             credentials: 'include',
             body: JSON.stringify({email: data.email.toLowerCase(), password: data.password})
-        }).then((data) => data.json())
+        }, { withCredentials: true }).then((data) => data.json())
           .then((data) => {
               if(data["error"]) setErrorForm(true)
               else console.log('front : ' + JSON.stringify(data))
