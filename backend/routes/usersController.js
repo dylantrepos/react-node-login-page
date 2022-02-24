@@ -26,29 +26,52 @@ router.get('/get/:email', (req, res) => {
 
 // Check if login credential are correct
 router.get('/login', (req, res) => {
-    if(req.session.user) {
-        console.log('yes')
-        res.send({ loggedIn: true, user: req.session.user })
+    if(req.session.authenticated) {
+        // res.json(req.session.authenticated);
+        res.json({test: true})
     } else {
-        console.log('no')
-        res.send({ loggedIn: false })
+        //console.log(req)
+        res.json(req.sessionID)
     }
 })
 
 router.post('/login', (req, res) => {
-    const email = req.body.email;
-    const password = req.body.password;
-    UsersModel.findOne({email: email}, function(err, doc) {
-        if(err) return console.error(`Error login user : ${err}`)
-        if(doc === null) return res.send({error: true})
-        if(bcrypt.compareSync(password, doc.password)) {
-            req.session.user = doc;
-            //req.session.save();
-            console.log('back : ' + (req.session.user));
-            res.send(doc);
-        }    
-        else return res.send({error: true})
-      });
+    console.log(req.sessionID)
+    const { email, password } = req.body;
+    // if(email && password) {
+    //     if(req.session.authenticated) {
+    //         res.json(req.session)
+    //     } else {
+    //         if(password === 'jeanJEAN123@') {
+    //             req.session.authenticated = true;
+    //             req.session.user = {
+    //                 email, password
+    //             }
+    //             res.json(req.session)
+    //         } else {
+    //             res.status(403).json({ msg: 'Bad Credentials'})
+    //         }
+    //     } 
+    // } else {
+    //     res.status(403).json({msg: 'Bad Credentials'})
+    // }
+    //res.sendStatus(200);
+    if(email && password) {
+        UsersModel.findOne({email: email}, function(err, doc) {
+            if(err) return console.error(`Error login user : ${err}`)
+            if(doc === null) return res.send({error: true})
+            if(req.session.authenticated) {
+                res.json(req.session);
+            } else {
+                if(bcrypt.compareSync(password, doc.password)) {
+                    req.session.authenticated = true;
+                    req.session.user = doc;
+                    console.log('back : ' + (req.session.user));
+                    res.json(req.session);
+                }    
+            }
+        });
+    } else return res.status(403).json({error: true})
 });
 
 

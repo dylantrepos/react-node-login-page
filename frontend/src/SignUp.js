@@ -13,8 +13,8 @@ function SignUp() {
   }
 
   useEffect(() => {
-    fetch('http://localhost:5500/users/login/')
-        .then((res) => res.json())
+    fetch('http://localhost:5500/users/login')
+        .then(res => res.json())
         .then(res => console.log(res))
 }, []);
 
