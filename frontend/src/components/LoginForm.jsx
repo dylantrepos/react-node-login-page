@@ -1,6 +1,7 @@
-import {  useState } from 'react';
+import {  useLayoutEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { postData } from '../helpers/postData';
+import { Navigate } from 'react-router-dom';
 import Submitbutton from './SubmitButton';
 const bcrypt = require('bcryptjs');
 const salt = bcrypt.genSaltSync(10);
@@ -10,7 +11,20 @@ export default function LoginForm () {
     const { register, handleSubmit, reset, formState: {errors} } = useForm();
     const [succesForm, setSuccesForm] = useState(false);
     const [errorForm, setErrorForm] = useState(false);
+    const [connected, setConnected] = useState(false)
 
+    useLayoutEffect(() => {
+        const test = fetch('http://localhost:5500/users/login', {
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        credentials: 'include'
+        })
+            .then(res => res.json())
+            .then(res => {
+            if(res.authenticated) setConnected(true)
+            })
+    }, []);
     
     const onSubmit = async data => {
         setErrorForm(false)
@@ -26,13 +40,17 @@ export default function LoginForm () {
         }, { withCredentials: true }).then((data) => data.json())
           .then((data) => {
               if(data["error"]) setErrorForm(true)
-              else console.log('front : ' + JSON.stringify(data))
+              else {
+                  setSuccesForm(true)
+                } //console.log('front : ' + JSON.stringify(data))
             })
             .catch(err => console.error(`Error when trying to connect to ${url}. Error message : ${err}`))
     }
 
-    return <form onSubmit={handleSubmit(onSubmit)}>
-            {succesForm ? <p className='success-form'>Success ! Your account has been created.</p> : '' }
+    return <>
+    {connected ? <Navigate to='/connected'/> : ''}
+    <form onSubmit={handleSubmit(onSubmit)}>
+            {succesForm ? <Navigate to="/connected" /> : '' }
             {errorForm ? <p className='error-form'>Error, your email or password are not correct. Try again or <a href='/' className='link'>create an account</a>.</p> : '' }
                 <div className="form" >
                 <div className="form-group">
@@ -53,4 +71,5 @@ export default function LoginForm () {
 
                 </div>
             </form>
+            </>
 }

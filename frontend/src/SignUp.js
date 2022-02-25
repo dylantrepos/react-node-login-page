@@ -6,10 +6,11 @@ import LoginForm from './components/LoginForm';
 import Submitbutton from './components/SubmitButton';
 
 function SignUp() {
-  const [login, setLogin] = useState(false);
+  const [loginPage, setLoginPage] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState({})
 
   const handleLogin = () => {
-      setLogin(!login)
+      setLoginPage(!loginPage)
   }
 
   useEffect(() => {
@@ -20,23 +21,26 @@ function SignUp() {
       credentials: 'include'
     })
         .then(res => res.json())
-        .then(res => console.log(res))
-}, []);
+        .then(res => {
+          console.log(res)
+          
+        })
+  }, []);
 
   return (
     <div className="container">
         <div className="left-block">
             <div className="welcome">
               <h1>Welcome !</h1>
-              <p className='text'>{login ? "Nice to see you again !" :  "First time here ? Let's create your account quickly !"}</p>
+              <p className='text'>{loginPage ? "Nice to see you again !" :  "First time here ? Let's create your account quickly !"}</p>
               <hr />
-              <p className='text'><em>{ login ? 'No account ? Sign up in 30 seconds' : 'Already have an account ?' } </em></p>
+              <p className='text'><em>{ loginPage ? 'No account ? Sign up in 30 seconds' : 'Already have an account ?' } </em></p>
               {/* <Link to="/login" className='btn-primary'>Login</Link> */}
-              <button className='btn-primary' onClick={handleLogin}>{ login ? 'Sign up' : 'login' }</button>
+              <button className='btn-primary' onClick={handleLogin}>{ loginPage ? 'Sign up' : 'login' }</button>
             </div>
         </div>
         <div className="right-block">
-            { login ? <LoginForm /> : <SignUpForm />}
+            { loginPage ? <LoginForm /> : <SignUpForm />}
         </div>
     </div>
   );    

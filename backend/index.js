@@ -30,7 +30,8 @@ app.use(express.json());
 app.use(cors({
     origin: "http://localhost:3000",
     methods: ["GET", "POST"],
-    credentials: true
+    credentials: true,
+    
 }));
 
 app.use(bodyParser.urlencoded({ extended: true }));

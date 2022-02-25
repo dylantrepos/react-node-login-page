@@ -1,10 +1,12 @@
 import React, { useEffect, useLayoutEffect, useState } from 'react';
+import { Navigate } from 'react-router-dom';
 import '../styles/signUp.scss';
 
 
 export default function Connected() {
 
-  const [test, setTest] = useState('')
+  const [loggedin, setLoggedIn] = useState(null)
+  const [user, setUser] = useState(false)
 
   useLayoutEffect(() => {
     const test = fetch('http://localhost:5500/users/login', {
@@ -15,7 +17,12 @@ export default function Connected() {
     })
         .then(res => res.json())
         .then(res => {
-          if(res.user) setTest(res.user.name)
+          if(res.user) {
+            setLoggedIn(true)
+            setUser(res.user)
+          } else {
+            setLoggedIn(false)
+          } 
         })
 }, []);
 
@@ -24,15 +31,20 @@ export default function Connected() {
       headers: {
         'Content-Type': 'application/json',
       },
+      credentials: 'include'
     })
-        .then(res => console.log('res'))
+        .then(res => {
+          setLoggedIn(false)
+        })
   }
 
 
-  return (
+  return (<>
+      {(loggedin === false) ? <Navigate to='/' /> : ''}
     <div>
-      <h1>Welcome {test}</h1>
+      <h1>Welcome {user.name}</h1>
       <button href='#' className='btn-primary' onClick={handleDisconnect}>Logout</button>
     </div>
+    </>
   )
 }

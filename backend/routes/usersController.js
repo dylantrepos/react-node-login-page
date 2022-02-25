@@ -27,47 +27,27 @@ router.get('/get/:email', (req, res) => {
 // Check if login credential are correct
 router.get('/login', (req, res) => {
     if(req.session.userid) {
-        // res.json(req.session.authenticated);
-        res.json(req.session)
+        res.status(200).json(req.session)
     } else {
-        res.send({fail: true})
+        res.send({authenticated: false})
     }
 })
 
 router.post('/login', (req, res) => {
     console.log(req.sessionID)
     const { email, password } = req.body;
-    // if(email && password) {
-    //     if(req.session.authenticated) {
-    //         res.json(req.session)
-    //     } else {
-    //         if(password === 'jeanJEAN123@') {
-    //             req.session.authenticated = true;
-    //             req.session.user = {
-    //                 email, password
-    //             }
-    //             res.json(req.session)
-    //         } else {
-    //             res.status(403).json({ msg: 'Bad Credentials'})
-    //         }
-    //     } 
-    // } else {
-    //     res.status(403).json({msg: 'Bad Credentials'})
-    // }
-    //res.sendStatus(200);
     if(email && password) {
         UsersModel.findOne({email: email}, function(err, doc) {
             if(err) return console.error(`Error login user : ${err}`)
             if(doc === null) return res.send({error: true})
             if(req.session.authenticated) {
-                res.json(req.session);
+                res.status(200).json(req.session);
             } else {
                 if(bcrypt.compareSync(password, doc.password)) {
                     req.session.authenticated = true;
                     req.session.userid = 'jean',
                     req.session.user = doc;
-                    console.log('back : ' + (req.session.user));
-                    res.json(req.session);
+                    res.status(200).json(req.session);
                 }    
             }
         });
@@ -87,12 +67,12 @@ router.post('/', (req, res) => {
         });
         
         newUser.save((err, docs) => {
-            if(!err) res.send(docs);
+            if(!err) res.status(200).send(docs);
             else console.error(`Error creating new user : ${err}`)
         }); 
     });
     
-    // Update a user by ID
+    // Update a user by email
     router.put('/:id', (req, res) => {
         if(!ObjectID.isValid(req.params.id)) return errIdUnknown(res, req);
         
@@ -131,8 +111,8 @@ router.delete("/:id", (req, res) => {
 });
 
 router.get("/disconnected", (req, res) => {
-    res.clearCookie('connect.sid')
-    res.redirect('http://localhost:3000/', 302)
+    res.clearCookie('connect.sid', {path: '/', domain: 'localhost'})
+    res.end()
 })
 
 module.exports = router;
