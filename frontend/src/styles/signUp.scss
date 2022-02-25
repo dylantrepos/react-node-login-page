@@ -143,6 +143,16 @@ $grey: rgb(82, 82, 82);
     height: 100%;
 }
 
+input[name=dob] {
+    width: 100%;
+    background-color: white;
+}
+
+form {
+    position: relative;
+    
+}
+
 .form-group {
     display: flex;
     flex-direction: column;
@@ -176,7 +186,9 @@ $grey: rgb(82, 82, 82);
     box-shadow: rgba(112, 219, 112, 0.479) 0px 10px 20px -10px;
     margin-bottom: 1.5rem;
 
+    backdrop-filter: blur(20px);
 }
+
 
 .error-form {
     background-color: rgba(255, 221, 221, 0.479);
@@ -221,6 +233,7 @@ $grey: rgb(82, 82, 82);
     form {
         margin: 2rem 0;
         display: flex;
+        flex-direction: column;
         justify-content: center;
         align-items: center;
     }

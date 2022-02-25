@@ -3,6 +3,9 @@ import { useForm } from 'react-hook-form';
 import { postData } from '../helpers/postData';
 import { Navigate } from 'react-router-dom';
 import Submitbutton from './SubmitButton';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 const bcrypt = require('bcryptjs');
 const salt = bcrypt.genSaltSync(10);
 
@@ -13,6 +16,15 @@ export default function LoginForm () {
     const [errorForm, setErrorForm] = useState(false);
     const [connected, setConnected] = useState(false);
     
+    const notifyErr = () => toast.error('Error, your email or password are not correct. Try again or create an account.', {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        });;
 
     useLayoutEffect(() => {
         const test = fetch('http://localhost:5500/users/login', {
@@ -40,7 +52,7 @@ export default function LoginForm () {
             body: JSON.stringify({email: data.email.toLowerCase(), password: data.password})
         }, { withCredentials: true }).then((data) => data.json())
           .then((data) => {
-              if(data["error"]) setErrorForm(true)
+              if(data["error"]) notifyErr()
               else {
                   setSuccesForm(true)
                 } 
@@ -52,7 +64,7 @@ export default function LoginForm () {
     {connected ? <Navigate to='/connected'/> : ''}
     <form onSubmit={handleSubmit(onSubmit)}>
             {succesForm ? <Navigate to="/connected" /> : '' }
-            {errorForm ? <p className='error-form'>Error, your email or password are not correct. Try again or <a href='/' className='link'>create an account</a>.</p> : '' }
+            <ToastContainer />
                 <div className="form" >
                 <div className="form-group">
                         <label htmlFor="email">Email</label>

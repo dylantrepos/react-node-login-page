@@ -7,6 +7,8 @@ import { useForm } from 'react-hook-form';
 import getAge from '../helpers/getAge';
 import Submitbutton from '../components/SubmitButton';
 import { postData } from '../helpers/postData';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function Connected() {
 
@@ -22,6 +24,16 @@ export default function Connected() {
     dob: '',
     city: ''
   })
+
+  const notify = () => toast.success('Your modifications has been saved !', {
+    position: "top-center",
+    autoClose: 5000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+    });;
 
   useEffect(() => {
       fetch('http://localhost:5500/users/login', {
@@ -45,7 +57,8 @@ export default function Connected() {
                   })})()} else {
                   setLoggedIn(false)
                 } 
-                setLoggedIn(true)
+                setLoggedIn(true);
+                notify()
               }
             })
       
@@ -70,6 +83,10 @@ export default function Connected() {
     if(userForm.password.length > 0) userSend = {...userSend, password: userForm.password}
     const url = `http://localhost:5500/users/${user._id}`;
     postData("PUT", url, userSend);
+    setSuccesForm(true)
+    notify()
+    setTimeout(() => setSuccesForm(false), 4000)
+
   }
 
   const onDelete = async () => {
@@ -88,6 +105,8 @@ export default function Connected() {
 
     return (<div className='connected-block'>
         {(load) ? <h1>Loading ... </h1> : <>
+         
+
           {(loggedin === false) ? <Navigate to='/' /> : ''}
             <div className='connected-header'>
               <h1 className='connected-title'>Welcome <span  className='connected-name'>{user?.name}</span></h1>
@@ -96,7 +115,7 @@ export default function Connected() {
             
             <div className="form-group">
             <form method='POST' onSubmit={handleSubmit(onSubmit, onError)}>
-            {succesForm ? <p className='success-form'>Success ! Your modifications have been saved.</p> : '' }
+            <ToastContainer />
                 <div className="form" >
                   <div className="form-group">
                           <label htmlFor="email">Email</label>
@@ -137,7 +156,7 @@ export default function Connected() {
                         <p className='errors'>{errors.city?.message}</p>
                     </div>
                    
-                    <button>Save modification</button>
+                    <button >Save modification</button>
 
                 </div>
             </form>

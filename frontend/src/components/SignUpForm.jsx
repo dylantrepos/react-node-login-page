@@ -3,14 +3,37 @@ import { useForm } from 'react-hook-form';
 import getAge from '../helpers/getAge';
 import { postData } from '../helpers/postData';
 import Submitbutton from './SubmitButton';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 const bcrypt = require('bcryptjs');
 const salt = bcrypt.genSaltSync(10);
+
 
 export default function SignUpForm () {
 
     const { register, handleSubmit, reset, formState: {errors} } = useForm();
     const [succesForm, setSuccesForm] = useState(false);
     const [errorForm, setErrorForm] = useState(false);
+    const notify = () => toast.success('Success ! Your account has been created.', {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        });;
+
+    const notifyErr = () => toast.error('This email already exists ! Try again or create another account.', {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        });;
 
     const onSubmit = async data => {
         const accountAlreadyExists = await fetch(`http://localhost:5500/users/get/${data.email.toLowerCase()}`).
@@ -18,13 +41,10 @@ export default function SignUpForm () {
                 then((res) => {
                     return res["error"] ? false : true
                 })  
-        console.log(accountAlreadyExists)
         if(accountAlreadyExists){
-            setSuccesForm(false);
-            setErrorForm(true)
+            notifyErr()
         }
         else {
-            setErrorForm(false)
             postData("POST", 'http://localhost:5500/users', {
                 email: data.email.toLowerCase(),
                 password: bcrypt.hashSync(data.password, salt),
@@ -33,19 +53,17 @@ export default function SignUpForm () {
                 city: data.city
             });
             reset();
-            setSuccesForm(true);
+            notify()
         }
         
     }
 
     const onError = () => {
-        setSuccesForm(false)
-        setErrorForm(false)
+        notifyErr();
     }
 
     return <form method='POST' onSubmit={handleSubmit(onSubmit, onError)}>
-            {succesForm ? <p className='success-form'>Success ! Your account has been created.</p> : '' }
-            {errorForm ? <p className='error-form'>Ho, this account already exists... ! Try with a different email.</p> : '' }
+            <ToastContainer />
                 <div className="form" >
                 <div className="form-group">
                         <label htmlFor="email">Email</label>
