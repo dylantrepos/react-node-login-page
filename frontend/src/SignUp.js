@@ -21,9 +21,9 @@ function SignUp() {
               <button  onClick={handleLogin}>{ loginPage ? 'Sign up' : 'login' }</button>
             </div>
         </div>
-        <div className="right-block liquid">
+        <div className='form-block'> <div className="right-block">
             { loginPage ? <LoginForm /> : <SignUpForm />}
-        </div>
+        </div></div>
     </div>
   );    
 }
