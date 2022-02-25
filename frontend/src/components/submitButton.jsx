@@ -1,5 +1,6 @@
-import React from 'react';
-
+/**
+ * Crate a custom styled button for form
+ */
 const Submitbutton = ({children}) => {
     return (
         <>

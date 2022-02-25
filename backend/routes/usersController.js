@@ -70,30 +70,30 @@ router.post('/', (req, res) => {
             if(!err) res.status(200).send(docs);
             else console.error(`Error creating new user : ${err}`)
         }); 
-    });
+});
     
-    // Update a user by email
-    router.put('/:id', (req, res) => {
-        if(!ObjectID.isValid(req.params.id)) return errIdUnknown(res, req);
-        
-        const updateUser = {
-            email: req.body.email,
-            password: req.body.password,
-            status: req.body.status,
-            name: req.body.name,
-            dob: req.body.dob,
-            city: req.body.city,
-    };
+// Update a user by email
+router.put('/:id', (req, res) => {
+    if(!ObjectID.isValid(req.params.id)) return errIdUnknown(res, req);
+    
+    const updateUser = {
+        email: req.body.email,
+        password: req.body.password,
+        status: req.body.status,
+        name: req.body.name,
+        dob: req.body.dob,
+        city: req.body.city,
+};
 
-    UsersModel.findByIdAndUpdate(
-        req.params.id, 
-        { $set: updateUser },
-        { new:  true},
-        (err, docs) => {
-            if(!err) res.send(docs);
-            else console.error(`Error updating user : ${err}`);
-        }
-    );
+UsersModel.findByIdAndUpdate(
+    req.params.id, 
+    { $set: updateUser },
+    { new:  true},
+    (err, docs) => {
+        if(!err) res.send(docs);
+        else console.error(`Error updating user : ${err}`);
+    }
+);
     
 });
 

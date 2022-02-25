@@ -11,7 +11,8 @@ export default function LoginForm () {
     const { register, handleSubmit, reset, formState: {errors} } = useForm();
     const [succesForm, setSuccesForm] = useState(false);
     const [errorForm, setErrorForm] = useState(false);
-    const [connected, setConnected] = useState(false)
+    const [connected, setConnected] = useState(false);
+    
 
     useLayoutEffect(() => {
         const test = fetch('http://localhost:5500/users/login', {
@@ -42,7 +43,7 @@ export default function LoginForm () {
               if(data["error"]) setErrorForm(true)
               else {
                   setSuccesForm(true)
-                } //console.log('front : ' + JSON.stringify(data))
+                } 
             })
             .catch(err => console.error(`Error when trying to connect to ${url}. Error message : ${err}`))
     }
