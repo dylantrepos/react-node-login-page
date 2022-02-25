@@ -18,10 +18,10 @@ function SignUp() {
               <p className='text'>{loginPage ? "Nice to see you again !" :  "First time here ? Let's create your account quickly !"}</p>
               <hr />
               <p className='text'><em>{ loginPage ? 'No account ? Sign up in 30 seconds' : 'Already have an account ?' } </em></p>
-              <button className='btn-primary' onClick={handleLogin}>{ loginPage ? 'Sign up' : 'login' }</button>
+              <button  onClick={handleLogin}>{ loginPage ? 'Sign up' : 'login' }</button>
             </div>
         </div>
-        <div className="right-block">
+        <div className="right-block liquid">
             { loginPage ? <LoginForm /> : <SignUpForm />}
         </div>
     </div>

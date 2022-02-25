@@ -68,7 +68,9 @@ export default function LoginForm () {
                         <p className='errors'>{errors.password?.message}</p>
                     </div>
                    
-                    <Submitbutton>Login</Submitbutton>
+                    <button type='submit'>
+                        <span>Login</span>
+                    </button>
 
                 </div>
             </form>

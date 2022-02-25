@@ -1,11 +1,14 @@
 $primary: #0d6efd;
+$danger: #fd0d0d;
 $grey: rgb(82, 82, 82);
+
 
 * {
     padding: 0;
     margin: 0;
     box-sizing: border-box;
     font-family: sans-serif;
+
 }
 
 .btn-primary {
@@ -27,8 +30,26 @@ $grey: rgb(82, 82, 82);
     }
 }
 
-.container {
+.btn-danger {
     background-color: white;
+    padding: .5rem 2rem;
+    border-radius: 5rem;
+    border: solid 2px $danger;
+    font-size: 1.2rem;
+    transition: all .5s;
+    text-decoration: none;
+    color: black;
+    cursor: pointer;
+    
+    &:hover {
+        background-color: $danger;
+        color: white;
+        box-shadow: $danger 0px 10px 20px -10px;
+        transition: all .2s;
+    }
+}
+
+.container {
     height: 100vh;
     width: 100%;
     padding: 2rem 5rem;
@@ -45,10 +66,8 @@ $grey: rgb(82, 82, 82);
   }
 
 .left-block {
-    border: solid 1px black;
     display: flex;
-    padding: 0 2rem;
-    padding: 10rem 0 10rem 8rem;
+    align-items: center;
 }
 
 .welcome {
@@ -72,12 +91,18 @@ $grey: rgb(82, 82, 82);
 }
 
 .right-block {
-    border: solid 1px black;
+    border: solid 1px rgb(238, 238, 238);
     width: auto;
     padding: 2rem 5rem;
     display: flex;
     flex-direction: column;
     justify-content: center;
+    //background-color: #e0e0e0;
+    border-radius: 25px;
+    background: #fcfcfc;
+    box-shadow:  -20px -20px 60px #cccccc,
+                 20px 20px 60px #ffffff;
+
 }
 
 @media screen and (max-width: 975px) {
@@ -158,3 +183,113 @@ $grey: rgb(82, 82, 82);
         text-decoration: underline;
     }
 }
+
+.connected-block {
+    margin: 5rem;
+    margin-top: 2rem;
+
+    .connected-header {
+        display: flex;
+        justify-content: space-around;
+    }
+
+    .connected-title {
+        font-size: 2.5rem;
+    }
+
+    .connected-name {
+        color: $primary
+    }
+
+    .form {
+        width: 500px;
+    }
+
+    form {
+        margin: 2rem 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .delete {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    @media screen and (max-width: 975px) {
+      }
+
+    @media screen and (max-width: 750px) {
+        .connected-header {
+            flex-direction: column;
+        }
+
+        .connected-title {
+            margin-bottom: 2rem;
+        }
+      }
+
+    @media screen and (max-width: 500px) {
+        .connected-title {
+            font-size: 2em;
+        }
+      }
+}
+
+/* From cssbuttons.io */
+button {
+    padding: 1em 3em;
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 2.5px;
+    font-weight: 500;
+    color: #000;
+    background-color: #fff;
+    border: 1px solid $primary;
+    border-radius: 45px;
+    box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease 0s;
+    cursor: pointer;
+    outline: none;
+   }
+   
+   button:hover {
+    background-color: $primary;
+    box-shadow: 0px 15px 20px rgba(46, 141, 229, 0.4);
+    color: #fff;
+    transform: translateY(-7px);
+   }
+   
+   button:active {
+    transform: translateY(-1px);
+   }
+
+.btn-danger {
+    padding: 1em 3em;
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 2.5px;
+    font-weight: 500;
+    color: #000;
+    background-color: #fff;
+    border: 1px solid $danger;
+    border-radius: 45px;
+    box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease 0s;
+    cursor: pointer;
+    outline: none;
+   }
+   
+   btn-danger:hover {
+    background-color: $danger;
+    box-shadow: 0px 15px 20px rgba(229, 46, 46, 0.4);
+    color: #fff;
+    transform: translateY(-7px);
+   }
+   
+   btn-danger:active {
+    transform: translateY(-1px);
+   }

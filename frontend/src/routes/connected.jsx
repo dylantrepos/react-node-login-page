@@ -22,31 +22,33 @@ export default function Connected() {
     dob: '',
     city: ''
   })
-  const [userId, setUserId] = useState({})
-
 
   useEffect(() => {
-    checkCookie.then(data => {
-      if(data){
-        setLoad(false);
-        if(data.authenticated) {
-         ( async () => {
-          const accountAlreadyExists = await fetch(`http://localhost:5500/users/get/${data.userid}`).
-                then((data) => data.json()).
-                then((user) => (user))
-          setUser(accountAlreadyExists)  
-          setUserForm({...userForm, 
-            name: accountAlreadyExists.name,
-            dob: accountAlreadyExists.dob,
-            city: accountAlreadyExists.city
-          });
-          console.log(accountAlreadyExists)
-         })()
-        } else {
-          setLoggedIn(false)
-        }
-      }
-    })
+      fetch('http://localhost:5500/users/login', {
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include'
+          })
+            .then(data => data.json())
+            .then(data => {
+              if(data){
+                setLoad(false);
+                if(data.authenticated) {
+                 ( async () => {
+                  const accountAlreadyExists = await fetch(`http://localhost:5500/users/get/${data.userid}`).
+                        then((data) => data.json()).
+                        then((user) => (user))
+                  setUser(accountAlreadyExists)  
+                  setUserForm({...userForm, 
+                    name: accountAlreadyExists.name,
+                    dob: accountAlreadyExists.dob,
+                    city: accountAlreadyExists.city
+                  })})()} else {
+                  setLoggedIn(false)
+                } 
+                setLoggedIn(true)
+              }
+            })
+      
   }, [])
 
   const onDisconnect = () => {
@@ -60,7 +62,6 @@ export default function Connected() {
   }
 
   const onSubmit = async (data) => {
-    console.log(userForm);
     const userSend = {
                           name: userForm.name,
                           dob: userForm.dob,
@@ -71,20 +72,29 @@ export default function Connected() {
     postData("PUT", url, userSend);
   }
 
-  const handleChange = (e) => {
-    const { name, value } = e.target
-    setUserForm({...userForm, [name]: value})
+  const onDelete = async () => {
+    const resultat = window.confirm('Are you sure about deleting your account ?')
+    const url = `http://localhost:5500/users/${user._id}`;
+    if(resultat) {
+      postData("DELETE", url, {});
+       onDisconnect()
+    }
   }
 
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setUserForm({...userForm, [name]: value});
+  }
 
-    return (<>
+    return (<div className='connected-block'>
         {(load) ? <h1>Loading ... </h1> : <>
           {(loggedin === false) ? <Navigate to='/' /> : ''}
-            <div>
-              <h1>Welcome {user?.name}</h1>
-              <button href='#' className='btn-primary' onClick={onDisconnect}>Logout</button>
+            <div className='connected-header'>
+              <h1 className='connected-title'>Welcome <span  className='connected-name'>{user?.name}</span></h1>
+              <button href='#' className='btn-logout' onClick={onDisconnect}>Logout</button>
             </div>
             
+            <div className="form-group">
             <form method='POST' onSubmit={handleSubmit(onSubmit, onError)}>
             {succesForm ? <p className='success-form'>Success ! Your modifications have been saved.</p> : '' }
                 <div className="form" >
@@ -127,11 +137,17 @@ export default function Connected() {
                         <p className='errors'>{errors.city?.message}</p>
                     </div>
                    
-                    <Submitbutton>Save modification</Submitbutton>
+                    <button>Save modification</button>
 
                 </div>
             </form>
+            </div>
+            <hr style={{margin: "2rem"}} />
+            <div className='delete'>
+                <h3 style={{marginBottom: "1rem"}}>Delete your account</h3>
+                <button className='btn-danger' onClick={onDelete}>Delete</button>
+            </div>
           </>}
-      </>
+      </div>
     )
 }

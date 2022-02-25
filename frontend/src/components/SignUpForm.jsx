@@ -90,7 +90,9 @@ export default function SignUpForm () {
                         <p className='errors'>{errors.city?.message}</p>
                     </div>
                    
-                    <Submitbutton>Create my account</Submitbutton>
+                    <button>
+                        <span>Create my account</span>
+                    </button>
 
                 </div>
             </form>

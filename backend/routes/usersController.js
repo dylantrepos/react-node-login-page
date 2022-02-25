@@ -27,7 +27,7 @@ router.get('/get/:email', (req, res) => {
 
 // Check if login credential are correct
 router.get('/login', (req, res) => {
-    if(req.session.userid) {
+    if(req.session.authenticated) {
         res.status(200).json(req.session)
     } else {
         res.send({authenticated: false})
@@ -35,7 +35,6 @@ router.get('/login', (req, res) => {
 })
 
 router.post('/login', (req, res) => {
-    console.log(req.sessionID)
     const { email, password } = req.body;
     if(email && password) {
         UsersModel.findOne({email: email}, function(err, doc) {
