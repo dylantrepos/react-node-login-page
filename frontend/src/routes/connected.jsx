@@ -6,6 +6,7 @@ import { removeCookie } from '../helpers/removeCookie';
 import { useForm } from 'react-hook-form';
 import getAge from '../helpers/getAge';
 import Submitbutton from '../components/SubmitButton';
+import { postData } from '../helpers/postData';
 
 export default function Connected() {
 
@@ -21,21 +22,31 @@ export default function Connected() {
     dob: '',
     city: ''
   })
+  const [userId, setUserId] = useState({})
 
 
   useEffect(() => {
     checkCookie.then(data => {
       if(data){
         setLoad(false);
-        (data.authenticated) ? setUser(data.user) : setLoggedIn(false);
-        setUserForm({...userForm, 
-          name: data.user.name,
-          dob: data.user.dob,
-          city: data.user.city
-        })
+        if(data.authenticated) {
+         ( async () => {
+          const accountAlreadyExists = await fetch(`http://localhost:5500/users/get/${data.userid}`).
+                then((data) => data.json()).
+                then((user) => (user))
+          setUser(accountAlreadyExists)  
+          setUserForm({...userForm, 
+            name: accountAlreadyExists.name,
+            dob: accountAlreadyExists.dob,
+            city: accountAlreadyExists.city
+          });
+          console.log(accountAlreadyExists)
+         })()
+        } else {
+          setLoggedIn(false)
+        }
       }
     })
-
   }, [])
 
   const onDisconnect = () => {
@@ -48,12 +59,21 @@ export default function Connected() {
     setErrorForm(false)
   }
 
-  const onSubmit = () => {}
+  const onSubmit = async (data) => {
+    console.log(userForm);
+    const userSend = {
+                          name: userForm.name,
+                          dob: userForm.dob,
+                          city: userForm.city
+                      };
+    if(userForm.password.length > 0) userSend = {...userSend, password: userForm.password}
+    const url = `http://localhost:5500/users/${user._id}`;
+    postData("PUT", url, userSend);
+  }
 
   const handleChange = (e) => {
     const { name, value } = e.target
     setUserForm({...userForm, [name]: value})
-    console.log(value)
   }
 
 
@@ -93,7 +113,7 @@ export default function Connected() {
                     </div>
                     <div className="form-group">
                         <label htmlFor="dob">Date of birth</label>
-                        <input type="date" {...register("dob", { required: "This is required.", 
+                        <input type="date" {...register("dob", {  
                         validate: dob => getAge(dob) === true || 'You must be 16+ to sign in.'
                         })} value={userForm.dob} onChange={handleChange}/>
                         <p className='errors'>{errors.dob?.message}</p>

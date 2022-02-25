@@ -24,6 +24,7 @@ router.get('/get/:email', (req, res) => {
   });
 });
 
+
 // Check if login credential are correct
 router.get('/login', (req, res) => {
     if(req.session.userid) {
@@ -45,8 +46,7 @@ router.post('/login', (req, res) => {
             } else {
                 if(bcrypt.compareSync(password, doc.password)) {
                     req.session.authenticated = true;
-                    req.session.userid = 'jean',
-                    req.session.user = doc;
+                    req.session.userid = doc.email,
                     res.status(200).json(req.session);
                 }    
             }
@@ -83,7 +83,7 @@ router.put('/:id', (req, res) => {
         name: req.body.name,
         dob: req.body.dob,
         city: req.body.city,
-};
+    };
 
 UsersModel.findByIdAndUpdate(
     req.params.id, 

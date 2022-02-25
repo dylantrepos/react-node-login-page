@@ -1,6 +1,6 @@
-export const postData = async (type, data) => {
+export const postData = async (type, url, data) => {
         
-    const response = await fetch('http://localhost:5500/users', {
+    const response = await fetch(url, {
         method: type,
         headers: {
             'Accept': 'application/json',

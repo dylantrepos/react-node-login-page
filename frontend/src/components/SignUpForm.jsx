@@ -25,7 +25,7 @@ export default function SignUpForm () {
         }
         else {
             setErrorForm(false)
-            postData("POST", {
+            postData("POST", 'http://localhost:5500/users', {
                 email: data.email.toLowerCase(),
                 password: bcrypt.hashSync(data.password, salt),
                 name: data.name,
