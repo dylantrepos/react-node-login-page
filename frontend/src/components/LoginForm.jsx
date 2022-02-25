@@ -63,7 +63,7 @@ export default function LoginForm () {
                     </div>
                     <div className="form-group">
                         <label htmlFor="password">Password</label>
-                        <input type="password" {...register("password", { required: "This is required." })} placeholder="Password..." />
+                        <input type="password" {...register("password", { required: "This is required." })} placeholder="Password..." autoComplete='false' />
                         <p className='errors'>{errors.password?.message}</p>
                     </div>
                    

@@ -63,7 +63,7 @@ export default function SignUpForm () {
                         }, pattern: {
                             value: /^(((?=.*[a-z])(?=.*[A-Z]))((?=.*[a-z])(?=.*[0-9]))((?=.*[A-Z])(?=.*[0-9]))(?=.*[!@#$%^&*]))/,
                             message: "Password must contains at least 1 lowercase, 1 uppercase, 1 numeric, 1 special character"
-                        }})} placeholder="Password..." />
+                        }})} placeholder="Password..." autoComplete='false'/>
                         <p className='errors'>{errors.password?.message}</p>
                     </div>
                     <div className="form-group">
