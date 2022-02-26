@@ -30,7 +30,6 @@ export default function Connected() {
             .then(data => data.json())
             .then(data => {
               if(data){
-                setLoad(false);
                 if(data.authenticated) {
                  ( async () => {
                   const accountAlreadyExists = await fetch(`http://localhost:5500/users/get/${data.userid}`).
@@ -41,7 +40,9 @@ export default function Connected() {
                     name: accountAlreadyExists.name,
                     dob: accountAlreadyExists.dob,
                     city: accountAlreadyExists.city
-                  })})()                
+                  })                
+                  setLoad(false);
+                })()                
                 } else {
                   setLoggedIn(false)
                 } 
