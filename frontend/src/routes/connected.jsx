@@ -1,14 +1,13 @@
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import '../styles/signUp.scss';
-import { checkCookie } from '../helpers/checkCookie';
 import { removeCookie } from '../helpers/removeCookie';
 import { useForm } from 'react-hook-form';
 import getAge from '../helpers/getAge';
-import Submitbutton from '../components/SubmitButton';
 import { postData } from '../helpers/postData';
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { toastSuccess } from '../helpers/toastify';
 
 export default function Connected() {
 
@@ -16,24 +15,12 @@ export default function Connected() {
   const [user, setUser] = useState(false)
   const [load, setLoad] = useState(true)
   const { register, handleSubmit, reset, formState: {errors} } = useForm();
-  const [succesForm, setSuccesForm] = useState(false);
-  const [errorForm, setErrorForm] = useState(false);
   const [userForm, setUserForm] = useState({
     password: '',
     name: '',
     dob: '',
     city: ''
   })
-
-  const notify = () => toast.success('Your modifications has been saved !', {
-    position: "top-center",
-    autoClose: 5000,
-    hideProgressBar: false,
-    closeOnClick: true,
-    pauseOnHover: true,
-    draggable: true,
-    progress: undefined,
-    });;
 
   useEffect(() => {
       fetch('http://localhost:5500/users/login', {
@@ -54,11 +41,11 @@ export default function Connected() {
                     name: accountAlreadyExists.name,
                     dob: accountAlreadyExists.dob,
                     city: accountAlreadyExists.city
-                  })})()} else {
+                  })})()                
+                } else {
                   setLoggedIn(false)
                 } 
                 setLoggedIn(true);
-                notify()
               }
             })
       
@@ -66,12 +53,7 @@ export default function Connected() {
 
   const onDisconnect = () => {
     removeCookie();
-    setLoggedIn(false)
-  }
-
-  const onError = () => {
-    setSuccesForm(false)
-    setErrorForm(false)
+    window.location.href = "/"
   }
 
   const onSubmit = async (data) => {
@@ -83,10 +65,7 @@ export default function Connected() {
     if(userForm.password.length > 0) userSend = {...userSend, password: userForm.password}
     const url = `http://localhost:5500/users/${user._id}`;
     postData("PUT", url, userSend);
-    setSuccesForm(true)
-    notify()
-    setTimeout(() => setSuccesForm(false), 4000)
-
+    toastSuccess("Your modifications has been saved !")
   }
 
   const onDelete = async () => {
@@ -114,7 +93,7 @@ export default function Connected() {
             </div>
             
             <div className="form-group">
-            <form method='POST' onSubmit={handleSubmit(onSubmit, onError)}>
+            <form method='POST' onSubmit={handleSubmit(onSubmit)}>
             <ToastContainer />
                 <div className="form" >
                   <div className="form-group">
@@ -156,7 +135,7 @@ export default function Connected() {
                         <p className='errors'>{errors.city?.message}</p>
                     </div>
                    
-                    <button >Save modification</button>
+                    <button type='submit'>Save modification</button>
 
                 </div>
             </form>

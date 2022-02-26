@@ -1,48 +1,22 @@
 import {  useLayoutEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { postData } from '../helpers/postData';
 import { Navigate } from 'react-router-dom';
-import Submitbutton from './SubmitButton';
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
-const bcrypt = require('bcryptjs');
-const salt = bcrypt.genSaltSync(10);
-
+import { testCookie } from '../helpers/checkCookie';
+import { toastDanger } from '../helpers/toastify';
 export default function LoginForm () {
 
-    const { register, handleSubmit, reset, formState: {errors} } = useForm();
+    const { register, handleSubmit, formState: {errors} } = useForm();
     const [succesForm, setSuccesForm] = useState(false);
-    const [errorForm, setErrorForm] = useState(false);
     const [connected, setConnected] = useState(false);
-    
-    const notifyErr = () => toast.error('Error, your email or password are not correct. Try again or create an account.', {
-        position: "top-center",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        });;
 
     useLayoutEffect(() => {
-        const test = fetch('http://localhost:5500/users/login', {
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        credentials: 'include'
-        })
-            .then(res => res.json())
-            .then(res => {
-            if(res.authenticated) setConnected(true)
-            })
+        testCookie.then(res => res.authenticated ? setConnected(true): setConnected(false));
     }, []);
     
     const onSubmit = async data => {
-        setErrorForm(false)
-        const url = 'http://localhost:5500/users/login/';
-        const datas = await fetch(url, {
+        const datas = await fetch('http://localhost:5500/users/login/', {
             method: "POST",
             headers: {
                 'Accept': 'application/json',
@@ -50,20 +24,15 @@ export default function LoginForm () {
             },
             credentials: 'include',
             body: JSON.stringify({email: data.email.toLowerCase(), password: data.password})
-        }, { withCredentials: true }).then((data) => data.json())
-          .then((data) => {
-              if(data["error"]) notifyErr()
-              else {
-                  setSuccesForm(true)
-                } 
-            })
-            .catch(err => console.error(`Error when trying to connect to ${url}. Error message : ${err}`))
+        }, { withCredentials: true })
+        .then((data) =>  data.json())
+        .then(data => data["error"] ? toastDanger('Error, your email or password are not correct. Try again or create an account.') : setSuccesForm(true))
+        .catch(err => console.error(`Error when trying to connect. Error message : ${err}`))
     }
 
     return <>
-    {connected ? <Navigate to='/connected'/> : ''}
+    { (succesForm || connected) ? <Navigate to='/connected'/> : '' }
     <form onSubmit={handleSubmit(onSubmit)}>
-            {succesForm ? <Navigate to="/connected" /> : '' }
             <ToastContainer />
                 <div className="form" >
                 <div className="form-group">
@@ -83,7 +52,6 @@ export default function LoginForm () {
                     <button type='submit'>
                         <span>Login</span>
                     </button>
-
                 </div>
             </form>
             </>

@@ -36,9 +36,12 @@ router.get('/login', (req, res) => {
 
 router.post('/login', (req, res) => {
     const { email, password } = req.body;
+    console.log(email, password)
     if(email && password) {
         UsersModel.findOne({email: email}, function(err, doc) {
+            
             if(err) return console.error(`Error login user : ${err}`)
+            console.log(doc)
             if(doc === null) return res.send({error: true})
             if(req.session.authenticated) {
                 res.status(200).json(req.session);
@@ -47,7 +50,10 @@ router.post('/login', (req, res) => {
                     req.session.authenticated = true;
                     req.session.userid = doc.email,
                     res.status(200).json(req.session);
-                }    
+                } 
+                else {
+                    res.status(200).json({error: true})
+                }   
             }
         });
     } else return res.status(403).json({error: true})

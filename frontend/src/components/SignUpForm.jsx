@@ -5,35 +5,14 @@ import { postData } from '../helpers/postData';
 import Submitbutton from './SubmitButton';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { toastDanger, toastSuccess } from '../helpers/toastify';
 
 const bcrypt = require('bcryptjs');
 const salt = bcrypt.genSaltSync(10);
 
-
 export default function SignUpForm () {
 
     const { register, handleSubmit, reset, formState: {errors} } = useForm();
-    const [succesForm, setSuccesForm] = useState(false);
-    const [errorForm, setErrorForm] = useState(false);
-    const notify = () => toast.success('Success ! Your account has been created.', {
-        position: "top-center",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        });;
-
-    const notifyErr = () => toast.error('This email already exists ! Try again or create another account.', {
-        position: "top-center",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        });;
 
     const onSubmit = async data => {
         const accountAlreadyExists = await fetch(`http://localhost:5500/users/get/${data.email.toLowerCase()}`).
@@ -41,9 +20,7 @@ export default function SignUpForm () {
                 then((res) => {
                     return res["error"] ? false : true
                 })  
-        if(accountAlreadyExists){
-            notifyErr()
-        }
+        if(accountAlreadyExists) toastDanger('This email already exists ! Try again or create another account.');
         else {
             postData("POST", 'http://localhost:5500/users', {
                 email: data.email.toLowerCase(),
@@ -53,43 +30,40 @@ export default function SignUpForm () {
                 city: data.city
             });
             reset();
-            notify()
+            toastSuccess('Success ! Your account has been created.');
         }
         
     }
 
-    const onError = () => {
-        notifyErr();
-    }
-
-    return <form method='POST' onSubmit={handleSubmit(onSubmit, onError)}>
-            <ToastContainer />
+    return <form method='POST' onSubmit={handleSubmit(onSubmit)}>
+                <ToastContainer />
                 <div className="form" >
-                <div className="form-group">
+                    <div className="form-group">
                         <label htmlFor="email">Email</label>
-                        <input type="email" {...register("email", { required: "This is required.", pattern: {
+                        <input type="email" placeholder="Email..." {...register("email", { required: "This is required.", pattern: {
                                 value: /\w*@\w*\.[a-z]*/,
                                 message: 'Please enter a valid email address'
-                                } })} placeholder="Email..." />
+                                }})} />
                         <p className='errors'>{errors.email?.message}</p>
                     </div>
                     <div className="form-group">
                         <label htmlFor="password">Password</label>
-                        <input type="password" {...register("password", { required: "This is required.", minLength: {
-                            value: 8,
-                            message: "Min length is 8"
-                        }, pattern: {
-                            value: /^(((?=.*[a-z])(?=.*[A-Z]))((?=.*[a-z])(?=.*[0-9]))((?=.*[A-Z])(?=.*[0-9]))(?=.*[!@#$%^&*]))/,
-                            message: "Password must contains at least 1 lowercase, 1 uppercase, 1 numeric, 1 special character"
+                        <input type="password" {...register("password", { required: "This is required.", 
+                            minLength: {
+                                value: 8,
+                                message: "Min length is 8" }, 
+                            pattern: {
+                                value: /^(((?=.*[a-z])(?=.*[A-Z]))((?=.*[a-z])(?=.*[0-9]))((?=.*[A-Z])(?=.*[0-9]))(?=.*[!@#$%^&*]))/,
+                                message: "Password must contains at least 1 lowercase, 1 uppercase, 1 numeric, 1 special character"
                         }})} placeholder="Password..." autoComplete='false'/>
                         <p className='errors'>{errors.password?.message}</p>
                     </div>
                     <div className="form-group">
                         <label htmlFor="name">Name</label>
-                        <input {...register("name", { required: "This is required.", pattern: { 
+                        <input placeholder="Name..."  {...register("name", { required: "This is required.", pattern: { 
                             value: /^[A-Za-zÀ-ÖØ-öø-ÿ]+$/gm,
                             message: "Name can only contains letters (a-z)."
-                        }})} placeholder="Name..." />
+                        }})} />
                         <p className='errors'>{errors.name?.message}</p>
                     </div>
                     <div className="form-group">
@@ -101,17 +75,13 @@ export default function SignUpForm () {
                     </div>
                     <div className="form-group">
                         <label htmlFor="city">City</label>
-                        <input {...register("city", { required: "This is required.", pattern: { 
+                        <input placeholder="City..." {...register("city", { required: "This is required.", pattern: { 
                             value: /^[A-Za-zÀ-ÖØ-öø-ÿ]+$/gm,
                             message: "Name can only contains letters (a-z)."
-                        }})} placeholder="City..." />
+                        }})} />
                         <p className='errors'>{errors.city?.message}</p>
                     </div>
-                   
-                    <button>
-                        <span>Create my account</span>
-                    </button>
-
+                    <button type='submit'> Create my account</button>
                 </div>
             </form>
 }
