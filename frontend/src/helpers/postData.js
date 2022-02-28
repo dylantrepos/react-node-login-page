@@ -1,3 +1,6 @@
+/**
+ * Helper to send or post data
+ */
 export const postData = async (type, url, data) => {
         
     const response = await fetch(url, {

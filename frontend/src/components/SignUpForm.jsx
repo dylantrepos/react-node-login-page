@@ -1,8 +1,6 @@
-import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import getAge from '../helpers/getAge';
 import { postData } from '../helpers/postData';
-import Submitbutton from './SubmitButton';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { toastDanger, toastSuccess } from '../helpers/toastify';
@@ -20,7 +18,7 @@ export default function SignUpForm () {
                 then((res) => {
                     return res["error"] ? false : true
                 })  
-        if(accountAlreadyExists) toastDanger('This email already exists ! Try again or create another account.');
+        if(accountAlreadyExists) toastDanger('This email already exists ! Please choose another one.');
         else {
             postData("POST", 'http://localhost:5500/users', {
                 email: data.email.toLowerCase(),

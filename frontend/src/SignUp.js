@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import './styles/signUp.scss';
 import SignUpForm from './components/SignUpForm';
 import LoginForm from './components/LoginForm';

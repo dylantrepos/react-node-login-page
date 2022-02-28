@@ -1,3 +1,6 @@
+/**
+ * Delete cookie from web navigator
+ */
 export const removeCookie = () => {
     fetch('http://localhost:5500/users/disconnected', {
                 headers: { 'Content-Type': 'application/json'},

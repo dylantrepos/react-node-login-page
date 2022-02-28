@@ -1,3 +1,6 @@
+/**
+ * Check if a date is 16 years old or more
+ */
 export default function getAge(date) {
     const today = new Date();
     const birthDate = new Date(date);

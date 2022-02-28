@@ -26,7 +26,7 @@ export default function LoginForm () {
             body: JSON.stringify({email: data.email.toLowerCase(), password: data.password})
         }, { withCredentials: true })
         .then((data) =>  data.json())
-        .then(data => data["error"] ? toastDanger('Error, your email or password are not correct. Try again or create an account.') : setSuccesForm(true))
+        .then(data => data["error"] ? toastDanger('Error, invalid email and/or password. Try again or create an account.') : setSuccesForm(true))
         .catch(err => console.error(`Error when trying to connect. Error message : ${err}`))
     }
 
