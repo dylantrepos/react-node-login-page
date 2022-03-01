@@ -1,7 +1,5 @@
 <h1>Creation of a login application with React and Express.</h1>
 
-<img width="1439" alt="Capture d’écran 2022-03-01 à 14 03 04" src="https://user-images.githubusercontent.com/60279661/156173756-6eb2e914-c9be-4cad-be15-029736064d24.png">
-
 <h3>Goals</h3>
 <p>Allow users to create an account, and then login on the website.</p>
 <h3>Tech used</h3>
