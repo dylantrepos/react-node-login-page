@@ -22,6 +22,8 @@
 <p> Change info on my account page :</p>
 <img width="auto" alt="Change info on my account page" src="https://user-images.githubusercontent.com/60279661/156174715-d3f5e8c7-ee8a-4b07-9c3a-df7a30bed07e.png">
 
-
 <p> Database MongoDB :</p>
 <img width="1439" alt="MongoDB" src="https://user-images.githubusercontent.com/60279661/156174537-49409940-1160-4fdf-a087-91ac76a70873.png">
+
+<p> Check creation of cookie with Postman :</p>
+<img width="1439" alt="Creation of a cookie" src="https://user-images.githubusercontent.com/60279661/156175450-17176b1c-8c3b-4b14-afde-5789b5a4f77f.png">
