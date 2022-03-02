@@ -2,8 +2,10 @@ const express = require("express");
 const router = express();
 const ObjectID = require("mongoose").Types.ObjectId;
 const bcrypt = require("bcryptjs");
+const cors = require('cors');
 
 const { UsersModel } = require("../models/userModel");
+const { json } = require("body-parser");
 
 const errIdUnknown = (res, req) => (res.status(400).send(`ID unknown : ${req.params.id}`));
 
@@ -24,6 +26,7 @@ router.get('/get/:email', (req, res) => {
   });
 });
 
+//router.options('/login', cors());
 
 // Check if login credential are correct
 router.get('/login', (req, res) => {
@@ -36,7 +39,6 @@ router.get('/login', (req, res) => {
 
 router.post('/login', (req, res) => {
     const { email, password } = req.body;
-    console.log(email, password)
     if(email && password) {
         UsersModel.findOne({email: email}, function(err, doc) {
             
@@ -49,6 +51,9 @@ router.post('/login', (req, res) => {
                 if(bcrypt.compareSync(password, doc.password)) {
                     req.session.authenticated = true;
                     req.session.userid = doc.email,
+                    res.cookie('connect.sid', doc.email, { maxAge: 900000, httpOnly: true });
+                    console.log('cookie created successfully');
+
                     res.status(200).json(req.session);
                 } 
                 else {
@@ -116,7 +121,7 @@ router.delete("/:id", (req, res) => {
 });
 
 router.get("/disconnected", (req, res) => {
-    res.clearCookie('connect.sid', {path: '/', domain: 'localhost'})
+    res.clearCookie('connect.sid', {path: '/', domain: 'https://test-front-office-api.herokuapp.com/'})
     res.end()
 })
 

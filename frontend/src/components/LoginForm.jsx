@@ -16,8 +16,9 @@ export default function LoginForm () {
     }, []);
     
     const onSubmit = async data => {
-        const datas = await fetch('http://localhost:5500/users/login/', {
+        const datas = await fetch('https://test-back-office-api.herokuapp.com/users/login/', {
             method: "POST",
+            mode: 'cors',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',

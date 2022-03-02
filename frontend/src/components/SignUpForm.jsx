@@ -13,14 +13,14 @@ export default function SignUpForm () {
     const { register, handleSubmit, reset, formState: {errors} } = useForm();
 
     const onSubmit = async data => {
-        const accountAlreadyExists = await fetch(`http://localhost:5500/users/get/${data.email.toLowerCase()}`).
+        const accountAlreadyExists = await fetch(`https://test-back-office-api.herokuapp.com/users/get/${data.email.toLowerCase()}`).
                 then((data) => data.json()).
                 then((res) => {
                     return res["error"] ? false : true
                 })  
         if(accountAlreadyExists) toastDanger('This email already exists ! Please choose another one.');
         else {
-            postData("POST", 'http://localhost:5500/users', {
+            postData("POST", 'https://test-back-office-api.herokuapp.com/users', {
                 email: data.email.toLowerCase(),
                 password: bcrypt.hashSync(data.password, salt),
                 name: data.name,
