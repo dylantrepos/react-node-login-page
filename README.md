@@ -10,8 +10,8 @@
 <p><strong>Technologies learned :</strong> Mangoose (database), Express (API), react-hook-form (Form).</p>
 <br/>
 <h3>Try it :</h3>
-<p> <a href="https://test-front-office-api.herokuapp.com/">This link</a></p>
-<p> <a href="https://test-back-office-api.herokuapp.com/">This one if the API doesn't respond </a></p>
+<p> <a href="https://test-front-office-api.herokuapp.com/">Open the app</a></p>
+<hr>
 <h3>What it looks like</h3>
 <p> Create an account successfully :</p>
 
